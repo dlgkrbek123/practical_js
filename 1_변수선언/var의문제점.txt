@@ -1,0 +1,79 @@
+es5까지는 var를 사용해서 변수를 정의해왔다.
+es6 (es2015)에서 const, let으로 정의하기 시작했다.
+
+- 정의된 변수가 함수 스코프를 가진다.
+- 스코프 : 변수가 사용될 수 있는 영역 
+        변수가 정의된 위치에 의해 결정
+
+function example() {
+  var i = 1;
+}
+console.log(i) // 에러 발생
+
+
+// 함수가 아닌 바깥에 정의시
+// 전역변수가 된다.
+// 전역환경을 함수라 생각해라
+
+function example1() {
+  i = 1; // 전역변수로 만듦
+  // 'use strict' 를 상단에 붙혀서 막을 수 있음
+}
+function example2() {
+  console.log(i)
+}
+example1()
+example2()
+
+
+
+- for문에서 정의된 변수가 반복문 종료후에도 남아있다.
+
+for(var i = 0; i < 10 ; i++) {
+  console.log(i)
+}
+console.log('last', i)
+
+- 이를 해소하기 위해 즉시 실행함수를 사용
+- 함수를 정의하는 시점에 실행되어 사라짐
+- 변수의 스코프를 제한
+
+(function() {
+  for(var i = 0; i < 10; i++) {
+    console.log(i)
+  }
+})()
+console.log('last:', i)
+// 작성하기 번거롭고
+// 가독성이 낮아진다.
+
+
+var로 정의된 변수는 스코프의 최상단으로 호이스팅된다.
+콘텍스트의 초기화에 의한 현상
+
+console.log(myVar) // undefined
+var myVar = 1;
+
+
+var myVar = undefined
+console.log(myVar)
+myVar = 1
+
+
+console.log(myVar)
+myVar = 2
+console.log(myVar)
+var myVar = 1
+
+
+
+- 한번 정의된 변수를 재정의되는 문제
+- 버그로 이어지기 쉽다.
+
+var myVar = 1
+var myVar = 2
+
+- 상수를 만들 수 없다.
+
+var PI = 3.141592
+PI = 123

@@ -1,0 +1,52 @@
+- const와 let은 블록 스코프를 가진다.
+- 대부분의 언어는 블록스코프를 사용
+- 블록을 벗어나면 참조 불가
+
+if(true) {
+  const i = 0;
+}
+console.log(i) // 에러
+
+
+- 한 블럭안에서 동일한 변수를 정의할 수 없다.
+- 같은 depth안에서는 동일한 변수 재정의 불가능
+- 아래 depth에서는 재정의 가능함 (우선순위에따라 가까운 변수를 참조)
+
+let foo = 'bar1'
+console.log(foo)
+if(true) {
+  let foo = 'bar2'
+  console.log(foo)
+}
+console.log(foo)
+
+- 호이스팅은 못막는다.
+- 하지만 변수를 정의하기 전에는 못 사용
+- 호이스팅 시 아무 값도 할당되지 않는다.
+
+console.log(foo)
+const foo = 1 // 에러 발생
+
+
+const foo = 1;
+{
+  console.log(foo)
+  const foo = 2 // 이 정의가 호이스팅되어 에러발생
+}
+
+------------------------------------------------------
+
+- const로 정의된 변수는 재할당이 불가능하다
+- 상수만들기 위해 사용하자.
+- let은 가능하다.
+
+- const로 정의된 객체의 속성은 수정가능하다.
+- const는 레퍼런스 자체만을 상수로 하는것이다.
+- immutability를 잘 유지하려면 immer같은거 써라
+
+
+- 아래의 내장함수로 객체의 속성변경을 막음
+   Object.preventExtensions
+   Object.seal
+   Object.freeze
+
