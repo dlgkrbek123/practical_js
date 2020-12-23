@@ -1,0 +1,27 @@
+const v1 = String(123)
+const v2 = String(new Date())
+
+const v3 = Number('123')
+const v4 = BigInt('123')
+
+const v1 = Boolean(123) // true
+const v2 = Boolean(0)  // false
+
+const v3 = Boolean('abc') // true
+const v4 = Boolean('') // false
+
+- !!을 사용하면 같은 효과를 얻을 수 있다.
+
+------------------------------------
+
+- 아래와 같이 호출하면 object로 변환한다.
+
+typeof new Boolean(true)
+typeof new Number(1)
+typeof new String('abc')
+
+-----------------------------------
+
+- 값 비교는 ==, === 를 사용
+- 타입변환을 수행하고 비교하는가 아닌가
+- valueOf로 프리미티브 타입의 언박싱이 가능

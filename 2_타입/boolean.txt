@@ -1,0 +1,46 @@
+- &&, || ( and, or)
+
+숫자나 문자열을 로직에서 사용가능
+- 0, NaN이 false
+- ''만 false
+
+- 논리연산의 출력값은 마지막으로 평가된 값
+- 평가값이 boolean이 아닐 수 있으므로 !!를 애용
+
+const c1 = 123 
+const c2 = 'abc'
+const v1 = c1 && c2;// 'abc'
+const v2 = c1 && c2 && 0; // 0
+const v3 = c1 && 0 && c2 // 0, false가 되면 &&는 더이상 평가 x
+
+const v4 = c1 || c2; // c1이 true라 추가 평가 x , c1
+const v5 = '' || c2 // c2
+
+---------------------------------------------------------
+
+- &&를 if 처럼 사용
+
+c1 && console.log('log1')
+
+---------------------------------------------------------
+
+- or로 기본값을 입력
+- ??를 입력하는 nullish coalescing을 사용해도 됨
+
+const price = 0
+const name = ''
+const price2 = price || 1000;// 1000
+const name2 = name || '이름을 입력해주세요'
+
+const name = person.name ?? 'unknown'
+const name = persion.name === undefined || person.name === null ? 'unknown' : person.name
+// undefine이거나 null이면 기본값이 사용됨
+
+
+const name = 'mike'
+function getDefaultName() {
+  console.log('called getDefaultName')
+  return 'default name'
+}
+console.log(name ?? getDefaultName()) // 값이 없으면 함수를 조건부 호출
+console.log(name || getDefaultName())

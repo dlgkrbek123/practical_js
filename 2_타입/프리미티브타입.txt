@@ -1,0 +1,13 @@
+- 같은 연산을 실행하지만 자료형의 차이로 결과가 다르다.
+
+console.log( 10 + 5 )
+console.log('10' + '5')
+
+
+- 6개의 프리미티브 타입
+- boolean, number, string, undefined, null, symbol     
+- symbol타입은 object에서 유니크한 속성이름을 표현할 때 사용
+- undefined는 값이 할당되지 않았다 null은 빈 값을 할당했다.
+- typeof null은 놀랍게도 'object'이다 ( 버그임 )
+
+const v6 = Symbol('abc')

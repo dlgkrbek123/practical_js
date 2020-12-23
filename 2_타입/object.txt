@@ -1,0 +1,131 @@
+- 프리미티브 타입을 제외한 나머지는 객체
+- 프리미티브 타입아니면 object에서 파생된 타입
+
+-------------------------------------------------
+
+- object (객체)
+- {}, new + Object 생성자를 활용해서 생성
+- 인스턴스 내부에 딱히 쓸만한 메소드 없음
+
+const obj = {
+  age: 21,
+  name: 'mike'
+}
+const obj2 = new Object({
+  age: 21,
+  name: 'mike'
+})
+
+console.log(Object.keys(obj))
+console.log(Object.values(obj))
+
+console.log(Object.entries(obj)) // key, value의 array의 array
+
+for(const [key, value] of Object.entries(obj)) {
+  console.log(key, value)
+}
+
+- 객체의 속성 추가, 수정, 삭제
+- 등록되지않은 key에 value할당시 속성 추가
+- 기존 key에 value 할당시 수정
+- delete키워드로 속성을 삭제
+
+const obj = {
+  age: 21,
+  name: 'mike'
+}
+obj.city = 'seoul'
+obj.age = 30
+
+delete obj.city
+delete obj['name']
+
+-------------------------------------------------
+
+- array ( 배열 )
+- array는 []나 new Array()로 생성
+
+const arr = [1, 2, 3]
+const arr2 = new Array(1, 2, 3)
+console.log(typeof arr === 'object') // true
+console.log(Object.values(arr)) // [1, 2, 3]
+
+- map, filter, reduce라는 유용한 메소드를 가짐
+- forEach, for-of를 이용해 루프를 돌 수 있다.
+
+const arr = [1, 2, 3]
+
+arr.forEach(item => console.log(item))
+for (const item of arr) {
+  console.log(item)
+}
+
+- 요소 검색
+
+arr.some(item => item === 2) // 조건을 만족하는 요소가 존재하는가?
+arr.every(item => item === 2) // 모든 요소가 조건을 만족하는가?
+arr.includes(2) // 배열이 해당 요소를 포함하는가?
+arr.find(item => item % 2 === 1) // 조건을 만족하는 요소 없으면 null
+arr.findIndex(item => item % 2 === 1) // 조건을 만족하는 인덱스 없으면 -1
+
+- 요소 추가/삭제
+
+const arr = [1, 2, 3]
+
+arr.push(4) // 스택처럼 사용
+arr.pop()
+
+arr.splice(1,1) // 추가와 삭제를 동시에 수행
+arr.splice(1, 0, 10, 20, 30) // index, 삭제 개수, 추가할 요소들
+arr.splice(1, 3, 40, 50)
+
+- 요소 정렬
+- 원본 배열에 영향
+
+arr.sort() // 오름차순으로 정렬
+arr.sort((left, right) => (left % 10) - (right % 10)  ) // 음수를 리턴하면 순서를 안 바꿈
+
+-------------------------------------------------
+
+- function
+
+function f1() {}
+console.log(typeof f1) // function
+
+class MyClass {} // class는 function을 기반으로 생성
+console.log(typeof MyClass) // function
+
+-------------------------------------------------
+
+- Object.prototype.toString을 사용해 object의 타입을
+- 세분화하여 확인가능하다.
+
+console.log(Object.prototype.toString.call(null))
+console.log(typeof [])
+console.log(Object.prototype.toString.call([]))
+
+-------------------------------------------------
+
+- Symbol은 유니크한 속성 이름을 만들 때 사용
+- 이름 충돌 문제가 발생하지 않음
+
+const idSymbol = Symbol('id')
+const obj = { id : 123 }  
+obj[idSymbol] = 456
+console.log(obj)
+// {id: 123, Symbol(id): 456}
+
+- iterator와 같이 내장된 symbol이 존재
+
+const arr = []
+console.log(arr[Symbol.iterator])
+
+-------------------------------------------------
+
+- bigint는 큰 숫자를 나타낼때 사용
+- 프리미티브 타입이 아니다 => object
+- typeof 키워드로 변수에 할당된 자료형을 확인
+
+const v2 = 123456789123456789n;
+
+-------------------------------------------------

@@ -1,0 +1,72 @@
+- 문자열에서 숫자를 파싱
+
+parseInt('123') // 123
+parseInt('123.456') // 123
+parseInt('123abc') // 123
+
+parseFloat('123')
+parseFloat('123.456') // 123.456
+parseFloat('123abc') // 123
+parseFloat('123.456.789') // 123.456
+
+
+- 파싱불가능한 인자가 넘어오면 NaN이 출력된다.
+- 숫자가 아니다 ( not a number )
+- isNaN()으로 NaN인지 검사
+
+const v = Number.parseInt('abc') // NaN
+
+----------------------------------------
+
+- 0으로 나누면 어떤 일이 벌어지는가
+- Infinity로 무한을 나타낼 수 있다.
+- isFinite(v)
+
+const v = 1 / 0
+console.log(v) / Infinity
+
+---------------------------------------
+
+- number는 64비트 부동소수점을 사용함.
+- 부동 소수점 ( 부호 : 1, 지수부 : 11, 가수부 52 )
+- 단일형태라 편하지만 메모리 최적화가 어렵다.
+
+- 연산결과가 정확한 안전한 수의 범위는 아래와 같다.
+  2^53 -1 ~ 2^53 - 1
+
+- 연산 결과의 정확성을 보장하고 싶으면 bigint를 써라
+- 아니면 isSafeInteger로 다 검사해야함
+
+9999999999234234n + 10n
+
+-----------------------------------------
+
+- 부동소수점이라 정확도에 한계가 있다.
+- 53비트의 정확도의 한계
+
+console.log(0.1 + 0.2 === 0.3) // false
+console.log(0.1 + 0.2)
+
+- Number.EPSILON으로 값의 유사성을 확인 가능
+
+function isSimilar(x, y) {
+  return Math.abs(x - y) < Number.EPSILON
+}
+console.log(isSimilar(0.1 + 0.2 , 0.3))
+
+----------------------------------------
+
+Math 내장함수
+
+- Math.random()
+ 0이상 1미만의 값을 리턴
+
+- Math.pow(a,b)
+ 지수를 연산
+
+- Math.floor, Math.ceil
+  올림, 내림을 적용한다.
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * ( max - min + 1)) + min
+}
