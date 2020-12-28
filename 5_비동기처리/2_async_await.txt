@@ -1,0 +1,101 @@
+- async / await
+- 비동기 프로그래밍을 동기 프로그래밍으로 작성하는데 특화된 문법
+- then 체이닝보다 가독성이 좋다.
+- 함수에 적용되는 개념
+
+- 비동기 상태를 값으로 다루는 Promise를 대체 x
+- Promise가 더 큰 개념
+
+async function getData() {
+  return 123 
+}
+getData().then(data => console.log(data))
+
+- 함수앞에 async를 붙혀 함수를 async / await 함수로 정의
+- 항상 프로미스를 리턴한다.
+- await 키워드를 사용, 오른쪽의 Promise객체가 settled될떄까지 기다림
+- await는 async await 함수내부에서만 사용가능
+
+function requestData(value) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      console.log('requestData', value)
+      resolve(value)
+    }, 1000)
+  })
+}
+async function printData() {
+  const data1 = await requestData(10) // 기다림
+  const data2 = await requestData(20) // 기다림
+  // 순차적 호출을 보장
+  console.log(data1, data2)
+}
+printData()
+
+
+- await 뒤의 프로미스가 rejected되면 rejected된 프로미스를 반환
+- 예외 발생시에도 똑같다. 이후의 실행없이 rejected된 프로미스를 반환
+- try / catch로 해결하자
+
+async function getData() {
+  console.log('getData 1')
+  await Promise.reject()
+  console.log('getData 2')
+  await Promise.resolve()
+  console.log('getData 3')
+} 
+getData()
+  .then(() => console.log('fulfilled'))
+  .catch(error => console.log('rejected'))
+
+
+- 가독성 예제
+- 의존성이 있는 비동기 처리를 할 때 더욱 눈에 띔
+
+function getDataPromise() {
+  asyncFunc1()
+    .then(data => {
+      console.log(data)
+      return asyncFunc2()
+    })
+    .then(data => {
+      console.log(data)
+    })
+}
+async function getDataAsync() {
+  const data1 = await asyncFunc1()
+  console.log(data1)
+  const data2 = await asyncFunc2()
+  console.log(data2)
+}
+
+
+- 병렬 처리
+
+async function getData() {
+  const p1 = asyncFunc1()
+  const p2 = asyncFunc2()
+  const data1 = await p1
+  const data2 = await p2
+  console.log({ data1, data2 })
+}
+async function getData() {
+  // 이 방법도 가능
+  const [data1, data2] = await Promise.all([asyncFunc1(), asyncFunc2()])
+  console.log({ data1, data2 })
+}
+getData()
+
+
+- 예외처리
+
+async function getData() {
+  try {
+    await doAsync()
+    return doSync()
+  } catch(error) {
+    // 동기, 비동기 예외를 모두 처리해줌  
+    console.log(error)  
+    return Promise.reject(error)
+  }
+}
