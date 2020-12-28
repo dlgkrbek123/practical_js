@@ -1,0 +1,46 @@
+- 함수는 일급함수
+- 언어의 함수가 변수처럼 취급된다.
+
+- 변수에 할당가능하다.
+- 함수의 인자로 넘길 수 있다.
+- 함수의 리턴값으로 사용될 수 있다.
+
+const add10 = function(a) {
+  return 10 + a
+}
+
+function apply(arr, op) {
+  return arr.map(op)
+}
+apply([1, 2, 3], add10)
+
+function makeAdd(v1) {
+  return function(v2) {
+    return v1 + v2
+  }
+}
+const add3 = makeAdd(3)
+
+--------------------------------------
+
+- closure
+- 함수가 정의시 자신을 둘러싼 lexical environment를 참조
+- 외부함수 종료했음에도 내부함수가 외부함수의 지역변수, 매개변수에 접근 가능        
+- 본디 함수의 지역변수, 매개변수는 함수의 생명주기가 다할때까지만 접근 가능
+- lexical environment를 객체처럼 사용
+
+--------------------------------------
+
+- 함수의 실행을 관리하기 위해 콜스택을 사용
+- pop과 push가 발생
+
+- global execution context : 프로그램을 감싸는 거대한 함수
+- execution context : 함수 실행정보, 스택에 쌓임
+- lexical environment : 지역변수, 매개변수를 담음 ( 변수 사전 )
+- execution context내에 lexical environment가 있다.
+
+- 변수를 lexical environment에서 찾는다.
+- 현재 execution context의 lexical environment에 변수가 
+- 없다면 참조하고 있는 상위 execution context에서 연쇄적으로 탐색
+
+- 실행이 끝나면 execution context는 pop되면서 삭제

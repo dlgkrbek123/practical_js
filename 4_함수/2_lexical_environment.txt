@@ -1,0 +1,55 @@
+- garbage collection이 안되므로 closure가 성립하는 것이다.
+- 내부 함수에 의해 le가 가비지 콜렉팅되지 않음
+- 내부 함수가 외부에서 닿을 수 없다면 mark-and-sweep알고리즘에 의해
+- le는 바로 제거될 것이다.
+
+
+- 함수 정의 시 둘러싼 함수의 le를 참조한다. 
+- 함수 호출시 참조된 le를 체인으로 연결
+- le에서 찾아보고 없으면 참조된 le를 따라 연쇄적으로 탐색
+
+------------------------------------------------------------
+
+function makeAdd(v1) {
+  return function(v2) {
+    return v1 + v2
+  }
+}
+const add3 = makeAdd(3)
+console.log(add3(10))
+const add7 = makeAdd(7)
+console.log(add7(10))
+
+- 전역상태의 le에 makeAdd, add3, add7이 호이스팅됨
+- makeAdd를 호출해서 execution context가 push됨 ( { v1 : 3 } )
+- 리턴되는 함수는 위의 le를 참조
+- 리턴된 함수가 호출되어 ec가 생성 ( { v2: 10 })
+- makeAdd의 리턴값을 변수에 담지 않는다면 le는 금새 제거될것이다.
+
+------------------------------------------------------------
+
+function main() {
+  let v = 0;
+  function f1() {
+    v++;
+    console.log(v);
+  }
+
+  function f2() {
+    v++;
+    console.log(v)
+  }
+  
+  return { f1, f2 }
+}
+const obj = main()
+obj.f1()
+obj.f2()
+obj.f1()
+obj.f2()
+
+- 전역 le ( main, obj가 호이스팅 )
+- main의 le ( v, f1, f2 )
+- main의 실행은 종료되나 le는 생존
+- obj을 통해 f1, f2를 호출 ( f1과 f2에서 v에 접근 시 렉시컬 체이닝 )
+- 하나의 le가 내부함수에 의해 공유된다.

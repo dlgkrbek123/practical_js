@@ -1,0 +1,84 @@
+- 매개변수의 기본값 설정
+
+function printLog(a = 1) {
+  console.log({ a })
+}
+printLog()
+printLog(3)
+
+
+function getDefault() {
+  console.log('called getDefault')
+  return 1;
+}
+function printlog(a = getDefault()) {
+  // 필요시에만 호출
+  console.log({ a })
+}
+printlog()
+printlog(3)
+
+
+function required() {
+  throw new Error('no parameter')
+}
+function printlog(a = required()) {
+  console.log({ a })
+}
+printlog(10)
+printlog()
+
+----------------------------------------------
+
+- 나머지 매개변수
+- es6에 추가됨 이전에는 arguments를 사용함
+
+function printlog(a, ...rest) {
+  console.log({ a, rest })
+}
+printlog(1, 2, 3)
+
+
+function printlog(a) {
+  // arguments는 유사 배열
+  const rest = Array.from(arguments).splice(1)
+  console.log({ a, rest })
+}
+printlog(1, 2, 3)
+
+----------------------------------------------
+
+- 명명된 매개변수
+- 매개변수를 객체로써 넘겨서 함수에서는 destructuring
+- 값이 없으면 undefined
+- =를 이용해서 기본값을 설정
+- rest변수를 사용가능
+
+function getValues1(numbers, greaterThan, lessThan) {
+  return numbers.filter(item => greaterThan < item && item < lessThan)
+}
+function getValues2({ numbers, greaterThan, lessThan }) {
+  return numbers.filter(item => greaterThan < item && item < lessThan)
+}
+
+const numbers = [10, 20, 30, 40, 50]
+const result1 = getValues1(numbers, 5, 25)
+const result2 = getValues2({ numbers: greaterThan: 5, lessThan: 25 })
+
+
+function f1({ p1, p3, ...rest }) {
+  console.log({ p1, p3, rest })
+}
+f1({ p1: 'a', p2: 'b', p3: 'c', p4: 'd' })
+f1({ p1: 'a', p3: 'c' })
+
+----------------------------------------------
+
+- 화살표 함수
+- 여러줄이 아니라면 중괄호, return 키워드 안써도 됨
+- this와 arguments가 binding되지 않는다. 
+- arguments는 rest로 대체
+
+const add = (a, b) => a + b
+const add5 = a => a + 5
+const addAndReturnObject = (a, b) => ({ result: a + b })
