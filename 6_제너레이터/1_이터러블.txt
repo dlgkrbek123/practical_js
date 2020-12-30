@@ -1,0 +1,37 @@
+- iterable ( 반복 가능 객체 )
+- Symbol.iterator 속성에 iterator를 리턴하는 함수가 구현
+
+- iterator
+- { value, done }을 리턴하는 next메서드를 가진다.
+
+--------------------------------------------------
+
+- 배열은 대표적인 iterable
+
+const arr = [10, 20, 30]
+const iter = arr[Symbol.iterator]()
+console.log(iter.next())
+
+- 제너레이터 객체도 iterable
+- 자체적으로 iterator임
+- Symbol.iterator를 통해 iterator 생성시 자기자신을 반환
+
+function* f1() {}
+const gen = f1()
+console.log(gen[Symbol.iterator]() === gen)
+
+--------------------------------------------------
+
+- for-of와 전개연산자와 함꼐 쓰임
+- for-of는 이터러블을 입력받아 done이 true일때까지 호출
+
+function* f1() {
+  yield 10; 
+  yield 20;
+  yield 30;
+}
+for(const v of f1()) {
+  console.log(v)
+}
+const arr = [...f1()]
+console.log(arr)
