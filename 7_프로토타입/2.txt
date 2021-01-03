@@ -1,0 +1,166 @@
+- 생성자 함수
+- new 키워드를 사용해서 객체를 만들때 사용하는 함수
+- new 키워드로 함수 호출시 주석처리된 부분이 내부적으로 처리됨
+
+function Person(name) {
+  // const this = {}
+  this.name = name
+  // return this
+}
+
+const person = new Person('mike')
+console.log(person.name)
+
+--------------------------------------------------
+
+- 프리미티브 타입은 각자의 생성자 함수를 가지고 있다.
+- 값생성을 위해 생성자 함수를 호출할 필요는 없다.
+
+--------------------------------------------------
+
+- 모든 함수는 prototype 속성을 가지고 있다.
+- 인스턴스의 프로토타입은 생성자 함수의 prototype을 가리킨다.
+
+function Person(name) {
+  this.name = name
+}
+const person = new Person('mike')
+console.log(Person.prototype)
+console.log(Object.getPrototypeOf(person) === Person.prototype)
+
+
+- 함수의 prototype은 해당함수의 프로토타입과는 다르다 
+- __proto__  vs  prototype
+
+function Person(name) {
+  this.name = name
+}
+const person = new Person('mike')
+
+console.log(Object.getPrototypeOf(Person) !== Person.prototype) // true
+
+console.log(Object.getPrototypeOf(person) === Person.prototype) // true
+console.log(Object.getPrototypeOf(Person.prototype) === Object.prototype) // true
+console.log(Object.getPrototypeOf(Person) === Function.prototype) // true
+
+console.log(Object.getPrototypeOf(Object) === Function.prototype) // true
+console.log(Object.getPrototypeOf(Function.prototype) === Object.prototype) // true
+console.log(Object.getPrototypeOf(Object.prototype) === null) // true
+
+--------------------------------------------------
+
+- 박싱과 언박싱을 통해 리터럴이 생성자 함수의 메소드를 호출가능
+
+--------------------------------------------------
+
+- 함수의 프로토타입 객체를 수정
+- 인스턴스의 __proto__는 생성시점에 결정된다.
+- 생성 후 프로토타입 객체를 교체해도 추종 x
+
+function Person(name) {
+  this.name = name
+}
+const person1 = new Person('mike')
+
+const newPrototype = {
+  values: [],
+  push(value) {
+    this.values.push(value)
+  },
+  getValues() {
+    return this.values
+  }
+}
+Person.prototype = newPrototype
+const person2 = new Person('jane')
+console.log(Object.getPrototypeOf(person1) !== newPrototype) // true
+console.log(Object.getPrototypeOf(person2) === newPrototype) // true
+
+person2.push(1)
+person2.push(2)
+console.log(person2.getValues())
+
+--------------------------------------------------
+
+- 프로토타입을 활용한 메모리 절약
+- 생성자 함수내에서 메소드 부착 시 메모리 낭비 발생
+
+function Person(name) {
+  this.name = name;
+  this._salary = 0;
+  
+  // 같은 기능의 함수 인스턴스가 메모리에 생겨버림
+  this.setSalary = function(salary) {
+    this._salary = Math.max(0, Math.min(1000, salary))
+  }
+  this.getSalary = function() {
+    return this._salary
+  }
+}
+
+const person1 = new Person('mike')
+person1.setSalary(2000)
+console.log(person1.getSalary())
+
+const person2 = new Person('jane')
+console.log(person1.getSalary !== person2.getSalary) // true
+
+
+- 프로토타입 객체를 사용하자
+
+function Person(name) {
+  this.name = name;
+  this._salary = 0; 
+}
+Person.prototype = {
+  setSalary(salary) {
+    this._salary = salary
+  },
+  getSalary = {
+    return this._salary
+  }
+}
+
+const person1 = new Person('mike')
+person1.setSalary(2000)
+console.log(person1.getSalary())
+
+const person2 = new Person('jane')
+console.log(person1.getSalary === person2.getSalary) // true
+
+--------------------------------------------------
+
+- constructor 속성
+- prototype의 constructor는 생성자 함수
+
+function Person(name) {
+  this.name = name
+}
+
+console.log(Person.prototype.constructor === Person)
+console.log(Person.constructor === Function)
+// Person은 Function을 상속
+// Person에는 constructor가 없다.
+// Person에서 Function의 prototype에서의 constructor를 찾는다.
+
+
+function Person() {
+  this.sayHello = function() {
+    console.log('hello')
+  }
+}
+function Animal() {
+  this.sayHello = function() {
+    console.log('hm...')
+  }
+}
+function makeInstanceOf(obj) {
+  return new obj.constructor(); 
+  // prototype 체이닝에 의해
+  // prototype의 constructor에 접근
+}
+
+const person = new Person()
+const animal = new Animal()
+const newInst = makeInstanceOf(person)
+newInst.sayHello() // hello

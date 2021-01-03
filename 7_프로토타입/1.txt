@@ -1,0 +1,91 @@
+- 모든 object에는 prototype이라는 숨겨진 속성이 있다.
+- null or object
+
+const person = {
+  name: 'mike'
+}
+const prototype = Object.getPrototypeOf(person)
+console.log(typeof prototype) // object
+console.log(person.__proto__ === prototype) // true
+
+
+- getPrototypeOf / setPrototypeOf
+- 프로토타입을 얻고 설정하는 가장 확실한 방법
+
+const person = {
+  name: 'mike'
+}
+const programmer = {
+  language: 'javascript'
+}
+Object.setPrototypeOf(programmer, person)
+// programmer.__proto__ = person
+console.log(Object.getPrototypeOf(programmer) === person) // true
+console.log(programmer.name)
+
+
+- 프로토타입 체이닝
+   객체의 속성을 참조시 해당 객체에 속성이 없다면 해당 객체의 프로토타입에서
+   재귀적으로 올라가면서 속성을 탐색한다.
+
+const person = {
+  name: 'mike'
+}
+const programmer = {
+  language : 'javascript'
+}
+const frontendDev = {
+  framework: 'react'
+}
+
+Object.setPrototypeOf(programmer, person)
+Object.setPrototypeOf(frontendDev, programmer)
+console.log(frontendDev.name, frontendDev.language)
+console.log(
+  frontendDev.__proto__.__proto__.name,
+  frontendDev.__proto__.language
+)
+
+
+- 일반적인 객체이므로 함수를 정의해서 공통로직 작성
+
+const person = {
+  name: 'mike',
+  sayHello() {
+    console.log('hello')
+  }
+}
+const programmer = {
+  language: 'javascript'
+}
+
+Object.setPrototypeOf(programmer, person)
+programmer.sayHello()
+
+
+- for-in을 사용하면 prototype의 속성까지 사용된다.
+- hasOwnProperty로 해당객체 직속 속성인지 파악가능
+- Object.keys로 해당 객체의속성만을 key로써 얻어올 수 있다.
+
+
+const person = {
+  name: 'mike'
+}
+const programmer = {
+  language: 'javascript'
+}
+
+Object.setPrototypeOf(programmer, person)
+for(const prop in programmer) {
+  console.log(prop)
+}
+
+for(const prop in programmer) {
+  if(programmer.hasOwnProperty(prop)) {
+    console.log(prop)
+  }
+}
+
+for(const prop of Object.keys(programmer)) {
+  console.log(prop)
+}
