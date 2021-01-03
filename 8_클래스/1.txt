@@ -1,0 +1,218 @@
+- 객체 지향의 클래스와 유사한 문법
+- 함수와 prototype 기반으로 구현됨
+
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+
+  sayHello() {
+    console.log(`hello~ ${this.name}!`)
+  }
+}
+
+const person = new Person('mike')
+person.sayHello()
+
+console.log(typeof Person) // 생성자 함수
+console.log(Person.prototype.consturctor === Person) // true
+console.log(Person.prototype.sayHello) // 메소드가 prototype내에 구현됨
+
+
+console.log(Object.keys(Person.prototype)) // [], 기본적으로 내부가 노출되지 않게 설정됨
+console.log(Object.getOwnPropertyNames(Person.prototype)) // 
+
+const person = new Person('mike')
+console.log(Object.keys(person)) // [name]
+
+--------------------------------------------------------------------------------
+
+- getter, setter
+- get,set 키워드와 멤버변수 명을 이용해 정의
+- 멤버변수앞에 _가 붙어야함 ( _name  vs  name )
+
+class Person {
+  constructor(name) {
+    this._name = name
+  }
+  get name() {
+    return this._name
+  }
+  set name(value) {
+    if(values.length < 4) {
+      console.log('name is too short')
+      return;
+    }
+    this._name = value
+  }
+}
+
+const person = new Person('mike')
+console.log(person.name) // getter 호출 
+person.name = 'ab' // setter 호출
+console.log(person.name)
+
+
+- getter만 설정하면 readonly가 된다.
+
+class Person {
+  constructor(name) {
+    this._name = name
+  }
+  get name() {
+    return this._name
+  }
+}
+
+const person = new Person('mike')
+person.name = 'jane'
+console.log(person.name)
+console.log(Object.keys(person))
+
+--------------------------------------------------------------------------------
+
+- extends를 사용한 상속 
+- prototype을 기반으로 구현되어 있다.
+
+class Person {
+  constructor(name) {
+    this.name = name
+  }
+  sayHello() {
+    console.log(`hello~ ${this.name}!`)
+  }
+}
+
+class Programmer extends Person {
+  constructor(name, language) {
+    super(name)
+    this.language = language
+  }
+}
+
+const p1 = new Programmer('mike', 'javascript')
+p1.sayHello()
+
+console.log(Object.getPrototypeOf(Programmer.prototype) === Person.prototype) // 프로토 타입간 연결
+console.log(Object.getPrototypeOf(Programmer) === Person) // 생성자 함수간 연결, static을 위해 연결
+
+
+- prototype 체이닝 예제
+
+class Person {
+  sayHello() {
+    console.log(`I'm Person`)
+  }
+}
+class Programmer extends Person {
+  sayHello() {
+    super.sayHello()
+    console.log(`I'm Programmer`)
+  }
+}
+
+console.log(Programmer.prototype.__proto__ === Person.prototype) // 체이닝
+Object.setPrototypeOf(Programmer.prototype, {}) // 체이닝을 끊는다.
+
+const person1 = new Programmer()
+person1.sayHello() // super에 접근불가해 에러 발생 
+
+const f1 = person1.sayHello
+f1()
+
+--------------------------------------------------------------------------------
+
+- 메소드 오버라이딩
+- 자식 클래스에서 부모에서 구현된 메서드를 재정의
+
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+  sayHello() {
+    console.log(`hello~ ${this.name}!`)
+  }
+  getRandom() {
+    return Math.floor(Math.random() * 10)
+  }
+}
+
+class Programmer extends Person {
+  constructor(name, language) {
+    super(name)
+    this.language = language
+  }
+  sayHello() {
+    super.sayHello()
+    console.log(`I like ${this.language}`)
+    console.log(`Your lucky number is ${this.getRandom()}`)
+  }
+  getRandom() {
+    return 20 + Math.floor(Math.random() * 10)
+  }
+}
+
+const p1 = new Programmer('mike', 'javascript')
+p1.sayHello()
+
+--------------------------------------------------------------------------------
+
+- class fields
+
+class Person {
+  age = 23; // 인스턴스의 값을 할당
+  constructor(name) {
+    this.name = name  
+  }
+  printName = () => {
+    console.log(this.name)
+  }
+}
+
+console.log(Person.prototype.age, Person.prototype.printName) // undefined
+
+const person1 = new Person('mike')
+const person2 = new Person('jane')
+person1.age = 100
+console.log(person1.age, person2.age) // 100 23
+setTimeout(person1.printName, 100)
+
+
+- 부모 클래스에서 클래스 필드로 메서드를 정의하면 자식에서 super로 접근 못함
+- super는 프로토타입을 기반으로 동작한다.
+
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+  sayHello() {
+    console.log(`hello~ ${this.name}!`)
+  }
+  // getRandom은 인스턴스에 추가됨
+  getRandom = () => {
+    return Math.floor(Math.random() * 10)
+  }
+}
+
+class Programmer extends Person {
+  constructor(name, language) {
+    super(name);
+    this.language = language
+  }
+  sayHello() {
+    super.sayHello()
+    console.log(`I like ${this.language}`)
+    console.log(`Your lucky number is ${super.getRandom()}`)
+    // prototype에 getRandom 없음
+    // this를 사용시 인스턴스에 부착된 getRandom이 호출됨
+    // 자식의 오버라이딩된 메소드가 호출되지 않는다.
+
+    // 자식도 클래스 필드로 바꿔라
+  }
+  getRandom() {
+    return 20 + Math.floor(Math.random() * 10)
+  }
+}
+
+
+ 

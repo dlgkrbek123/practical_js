@@ -1,0 +1,181 @@
+- static 키워드
+- 생성자 함수자체에 직접 프로퍼티를 추가한것과 같다.
+
+class Person {
+  static CURRENT_ID = 1;
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+    this.id = Person.CURRENT_ID++;
+  }
+  static getYounger(p1, p2) {
+    return p1.age <= p2.age ? p1 : p2;
+  }
+}
+// Person.CURRENT_ID = 1;
+// Person.getYounger = function(p1, p2) {}
+
+
+const person1 = new Person('mike', 23)
+const person2 = new Person('jane', 32)
+const younger = Person.getYounger(person1, person2)
+
+console.log(younger.name)
+console.log(Person.CURRENT_ID)
+
+
+- static 변수와 메서드도 자식 클래스에서 접근 가능
+- extends 키워드로 상속 시 생성자 함수간에도 프로토타입 체이닝 형성
+
+class Person {
+  constructor(name, age) {
+    this.name = name
+    this.age = age
+  }
+  static getYounger(p1, p2) {
+    return p1.age <= p2.age ? p1 : p2
+  }      
+}
+class Programmer extends Person {}
+
+console.log(Programmer.getYounger)
+console.log(Object.getPrototypeOf(Programmer) === Person)
+
+
+- static과 상속을 이미지로 정리 (static_상속.png 참조)
+- getYounger는 이미지의 오류이다. Person 생성자 함수의 프로퍼티임
+
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+  static getYounger(p1, p2) {
+    return p1.age <= p2.age ? p1 : p2;
+  } 
+  printName = () => {
+    console.log(this.name)
+  }
+}
+class Programmer extends Person {
+  sayHello() {
+    console.log(`hello~ I'm Programmer`)
+  }   
+}
+
+const p1 = new Programmer('mike')
+
+----------------------------------------------------
+
+- 접근 제한 
+- 일반적인 객체지향언어는 키워드로 속성에 대한
+- 접근범위를 제한한다. ( public, protected, private )
+
+- 인스턴스를 통해 직접 접근하는가? 자식 클래스에서 직접 접근하는가?
+- public : 인스턴스를 통한 직접 접근 및 자식 클래스에서 직접 접근 허용
+- protected : 인스턴스 직접접근은 안되지만 자식 클래스에서는 직접 접근 가능
+- private : 인스턴스와 자식클래스에서 직접 접근 불가
+
+- js에서는 모든 멤버변수와 메서드는 public이다.
+- #을 통해 private으로 정의
+- protected는 언어에서 지원 x, _로 시작하는 컨벤션
+
+class Person {
+  #name = ''
+  _age = 23;
+  constructor(name) {
+    this.#name = name;
+  }
+}
+class Programmer extends Person {
+  sayHello() {
+    console.log(this.name) // undefined
+    console.log(this['#name']) // undefined
+  }
+}
+
+const person1 = new Programmer('mike')
+person1.sayHello()
+console.log(person1.name) // undefined
+
+----------------------------------------------------
+
+- Array 상속 예제
+
+class PersonArray extends Array {
+  filterYounger(age) {
+    return this.filter(item => item.age <= age)
+    // PersonArray의 인스턴스가 리턴됨
+  }
+}
+
+const arr = new PersonArray(
+  { name: 'mike', age: 20 },
+  { name: 'jane', age: 30 },
+  { name: 'jack', age: 40 },
+)
+const arr2 = arr.filterYounger(35)
+console.log(arr2)
+
+const arr3 = arr2.filterYounger(25)
+console.log(arr3)
+
+----------------------------------------------------
+
+- instanceof 키워드
+- __proto__를 기반으로 인스턴스가 특정 클래스의 인스턴스인지 검사
+- 따라서 부모 클래스도 true
+
+class Person {}
+function Person2() {}
+
+const person1 = new Person()
+const person2 = new Person2()
+const arr = []
+
+console.log(person1 instanceof Person)
+console.log(person2 instanceof Person2)
+console.log(arr instanceof Array) 
+
+
+- class가 static메서드로 Symbol.hasInstance를 가지고 있다면
+- 해당 함수를 호출해서 instanceof를 판단한다.
+
+class Person {
+  constructor(personId) {
+    this.personId = personId
+  }
+  static [Symbol.hasInstance](obj) {
+    return !!obj.personId
+  }
+}
+
+----------------------------------------------------
+
+- 다중상속은 지원되지 않는다.
+- 다만 extends 뒤에 class를 반환하는 함수를 넘겨서 상속관계를 정의가능 
+
+class Person {
+  walk() {
+    console.log('walk')
+  }
+}
+class Korean {
+  sayHello() {
+    console.log('안녕하세요')
+  }
+}
+class KoreanPerson extends Person, Korean {}
+
+function getParents() {
+  return class extends Korean {
+    walk() {
+      console.log('walk')
+    }
+  }
+}
+class KoreanPerson extends getParents() {}
+
+const k1 = new KoreanPerson()
+k1.walk()
+k1.sayHello()
