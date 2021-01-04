@@ -1,0 +1,30 @@
+- 웹팩은 모듈번들러
+- 모듈방식으로 코드작성시 배포하기 좋은 형태로 번들링해줌
+
+npm install webpack webpack-cli
+npx webpack
+
+- dist에 main.js로 하나의 파일로 번들링됨
+- 모듈 시스템의 영향을 받지 않는 잘 실행되는 파일
+
+- esm은 js파일만 모듈로 사용가능
+- 웹팩이 다양한 파일을 모듈로 처리가능하게 함 (json, 이미지등을 값으로 import)
+
+--------------------------------------------------------------
+
+- babel
+- js 트랜스파일러 ( input.js => output.js )
+- 최신문법으로 작성된 코드를 레가시 환경에서 작동 가능한 문법 변환
+
+npm install @babel/core @babel/cli @babel/plugin-proposal-optional-chaining
+npx babel --plugins @babel/plugin-proposal-optional-chaining src/index.js
+
+--------------------------------------------------------------
+
+- 폴리필
+- 런타임에 브라우져의 부족한 기능을 주입
+- 바벨과 폴리필을 병행하여 레가시 환경을 지원
+
+import 'core-js/features/array/flat' // flat기능 검사후 없으면 주입
+const arr = [1, [2, 3], [4, [5]]]
+arr.flat(2)
