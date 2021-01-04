@@ -1,0 +1,36 @@
+- 모듈의 실행순서 ( evaluation 참조 )
+
+- 모듈은 처음에 한번만 실행된다.
+- 모듈 실행중에는 import로 실행시킨 모듈측의 실행은 잠깐 중단된다.
+- 이후의 import는 처음 실행시 export된 요소가 사용
+
+
+- esm은 순환참조를 허용 ( cycle-refer 참고 )
+- 다만 export, import 순서는 맞춰야 한다.
+- 내보내는 순서 및 실행순서를 잘 관리하자
+
+
+- 하나의 파일에서 모든 모듈의 import를 담당해라
+- 모듈끼리 import, export 주고받지 말고 한 파일을 통해라
+
+
+//1.js
+import './index.js'
+
+// index.js
+// 실행순서와 export를 담당
+export * from './b.js'
+export * from './a.js'
+
+// a.js
+import { sayHello } from './index.js'
+console.log('a.js')
+export const NAME = 'mike'
+sayHello()
+
+// b.js
+import { NAME } from './index.js'
+console.log('b.js')
+export const sayHello = () => {
+  console.log('hello~!', NAME)
+}

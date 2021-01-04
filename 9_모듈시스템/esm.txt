@@ -1,0 +1,104 @@
+- 각 파일이 모듈 
+- 변수와 함수를 모듈간 내보내고 가져오기 위해 모듈시스템이 필요
+- js에서는 언어 차원에서 모듈시스템이 없어왔음
+- 전역 영역에 변수와 함수를 등록해왔다.
+
+- esm이라는 모듈시스템이 지원됨
+- node.js에서는 commonJS를 써왔다.
+
+- 최근에는 node.js에서도 esm 사용가능
+- package.json에 type이 module로 설정되어야함
+
+- 브라우져에서도 esm 사용가능
+- script의 type을 module로 설정
+
+<script type="module" src="./a.js"></script>
+
+-------------------------------------------------
+
+- export를 이용해서 내보낸다.
+- 일반 export는 이름이 필요하다
+
+export let v1 = 123;
+export const v2 = 'abc'
+export function v3() {}
+
+or
+
+let v1 = 123;
+const v2 = 'abc'
+function v3() {}
+export { v1, v2, v3 as v4 } // 이름지어진 요소들을 export
+
+
+- export-default로 하나의 모듈에서 단일의 default인 요소를 내보낸다.
+- export default는 이름이 필수 x ( import하는측에서 정하면 됨)
+
+export default function sayHello() {
+  console.log('hello~!')
+}
+export default () => {}
+
+
+- reExport
+- index.js에서 서브 모듈을 관리, 사용하는 측에서 간편
+
+- 모듈의 모든 내용을 export (named export만 작동, default export는 무시)
+    export * from './programmer/java-dev.js'
+
+- named export 내보내기
+    export { haveDinnerTogether as default, um as joonsick, ramen } from './family.js'
+
+- default 다시내보내기
+    export { default as Dinner } from './dinner'
+
+- named export와 default export를 reexport하고 싶다면 두줄 작성
+    export * from './user.js'
+    export { default } as from './user.js'
+
+-------------------------------------------------
+
+export let v1 = 123;
+export const v2 = 'abc'
+export function v3() {}
+export default function sayHello() {
+  console.log('hello~!')
+}
+
+- import할때 괄호를 이용해 default와 아닌 요소를 구분한다.
+
+import f1, {v1, v2, v3 as myV3 } from './1.js'
+console.log({ v1, v2, myV3 })
+f1()
+
+- export된 모든 것을 하나의 객체로 담을 수 있다.
+
+import * as myModule from './1.js'
+
+console.log(myModule.v1)
+console.log(myModule.v2)
+console.log(myModule.v3)
+myModule.default()
+
+-------------------------------------------------
+
+- esm은 정적인 모듈 시스템
+- 컴파일 타임에 무엇이 import되고 export될지 정해져야 함
+
+if(Math.random() < 0.5) {
+  import { b1 } from './b.js'
+  console.log(b1)
+} else {
+  import { c1 } from './c.js'
+  console.log(c1)
+}
+// 에러 발생
+
+- 실행시간에 import될 요소를 결정하려면 dynamic-import 사용
+- import를 함수처럼 실행, Promise를 반환
+
+if(Math.random() < 0.5) {
+  import('./b.js').then(({ b1 }) => console.log(b1))
+} else {
+  import('./c.js').then(({ c1 }) => console.log(c1))
+}
